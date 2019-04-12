@@ -1,0 +1,21 @@
+
+// Global SCSS styling
+// @see https://docs.nativescript.org/ui/styling
+
+$app-color: #329be8;
+
+GridLayout {
+    padding: 10;
+}
+
+.fa-brands {
+    font-family: fa-brands-400;
+}
+
+.fa-regular {
+    font-family: fa-regular-400;
+}
+
+.fa-solid {
+    font-family: fa-solid-900;
+}

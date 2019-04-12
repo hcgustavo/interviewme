@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "483962250834",
+    "firebase_url": "https://interviewme-3d43c.firebaseio.com",
+    "project_id": "interviewme-3d43c",
+    "storage_bucket": "interviewme-3d43c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:483962250834:android:3895a612f603e2a1",
+        "android_client_info": {
+          "package_name": "com.gustavohc.interviewme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "483962250834-a1sfip6a66t1qo57d37qokq87g61p63n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gustavohc.interviewme",
+            "certificate_hash": "2ff8f1b2e6f6c7536ba5b3d4e1817c7735a2ff7a"
+          }
+        },
+        {
+          "client_id": "483962250834-c682arhqf58nh3tle2t8s319rb5koo0a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLYaJ-qVOuiu8ue9-GQ6iqNQyUNwwjq-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "483962250834-c682arhqf58nh3tle2t8s319rb5koo0a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
