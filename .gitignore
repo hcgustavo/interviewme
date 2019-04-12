@@ -7,3 +7,6 @@ node_modules
 # NativeScript application
 hooks
 platforms
+
+# APIS
+app/App_Resources/Android/google-services.json
