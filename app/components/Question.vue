@@ -19,7 +19,14 @@
                 class="record-btn fa-solid"
                 :text="microphoneIcon" 
                 :isEnabled="canRecord"
+                v-show="!isRecording"
                 @tap="recordAnswer" />
+                <Button 
+                dock="bottom" 
+                class="stop-btn fa-solid"
+                :text="stopIcon" 
+                v-show="isRecording"
+                @tap="stopRecording" />
             </DockLayout>
         </GridLayout>
     </Page>
@@ -34,9 +41,11 @@ export default {
         return {
             status: "",
             canRecord: false,
+            isRecording: false,
 
             // Icons
             microphoneIcon: FontAwesome.getIcon(FontAwesome.Icon.MICROPHONE),
+            stopIcon: FontAwesome.getIcon(FontAwesome.Icon.STOP),
         }
     },
 
@@ -49,6 +58,10 @@ export default {
         },
 
         recordAnswer() {
+
+        },
+
+        stopRecording() {
 
         }
     }
@@ -84,6 +97,15 @@ export default {
     height: 80;
     border-radius: 50;
     background-color: #5a5a5a;
+    color: #fff;
+    font-size: 24;
+}
+
+.stop-btn {
+    width: 80;
+    height: 80;
+    border-radius: 50;
+    background-color: #dc3545;
     color: #fff;
     font-size: 24;
 }

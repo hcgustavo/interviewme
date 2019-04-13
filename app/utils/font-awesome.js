@@ -55,6 +55,7 @@ export const Icon = {
   SIGN_OUT_ALT        :   0xf2f5,
   SQUARE              :   0xf0c8,
   STAR                :   0xf005,
+  STOP                :   0xf04d,
   SYNC_ALT            :   0xf2f1,
   TIMES               :   0xf00d,
   TOOTH               :   0xf5c9,
