@@ -20,6 +20,7 @@
 
 <script>
 import Question from './Question';
+import QuestionsNumberModal from './QuestionsNumberModal';
 import * as FontAwesome from '../utils/font-awesome';
 
 const dialogs = require("tns-core-modules/ui/dialogs");
@@ -35,7 +36,13 @@ export default {
 
     methods: {
         onStartInterview() {
-            this.$navigateTo(Question, {clearHistory: true});
+            this.$showModal(QuestionsNumberModal, {fullscreen: true})
+            .then(value => {
+                //Load questions
+
+                // After loading question, go to Question screen
+                this.$navigateTo(Question, {clearHistory: true});
+            })
         },
 
         signOut() {
