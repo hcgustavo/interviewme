@@ -14,13 +14,13 @@
             row="1" />
 
             <StackLayout orientation="vertical" verticalAlignment="center" row="2">
-                <Button class="facebook-btn">
+                <Button class="facebook-btn" @tap="loginFacebook">
                     <FormattedString>
                         <Span class="fa-brands" :text="facebookIcon" />
                         <Span text="  Connectez-vous avec Facebook" />
                     </FormattedString>
                 </Button>
-                <Button class="google-btn" marginTop="10">
+                <Button class="google-btn" marginTop="10" @tap="loginGoogle">
                     <FormattedString>
                         <Span class="fa-brands" :text="googleIcon" />
                         <Span text="  Connectez-vous avec Google" />
@@ -32,13 +32,28 @@
 </template>
 
 <script>
+import Main from './Main';
 import * as FontAwesome from '../utils/font-awesome';
+
+const dialogs = require("tns-core-modules/ui/dialogs");
 
 export default {
     data() {
         return {
+
+            // Icons
             facebookIcon: FontAwesome.getIcon(FontAwesome.Icon.FACEBOOK),
             googleIcon: FontAwesome.getIcon(FontAwesome.Icon.GOOGLE)
+        }
+    },
+
+    methods: {
+        loginFacebook() {
+            this.$authService.loginFacebook();
+        },
+
+        loginGoogle() {
+            this.$authService.loginGoogle();
         }
     }
 }

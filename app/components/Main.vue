@@ -1,9 +1,16 @@
 <template>
     <Page actionBarHidden="true">
-        <GridLayout rows="auto, *">
-            <Label class="title" text="Interview.me" row="0" horizontalAlignment="center" />
+        <GridLayout rows="auto, auto, *">
+            <Button 
+            class="fa-solid signout-btn" 
+            :text="signOutAltIcon" 
+            horizontalAlignment="right" 
+            @tap="signOut"
+            row="0" />
 
-            <StackLayout orientation="vertical" verticalAlignment="center" row="1">
+            <Label class="title" text="Interview.me" horizontalAlignment="center" row="1" />
+
+            <StackLayout orientation="vertical" verticalAlignment="center" row="2">
                 <Button class="btn" text="COMMENCER UNE ENTREVUE" @tap="onStartInterview" />
                 <Button class="btn" text="VOIR MES ENTREVUES" marginTop="30" />
             </StackLayout>
@@ -13,17 +20,35 @@
 
 <script>
 import Question from './Question';
+import * as FontAwesome from '../utils/font-awesome';
+
+const dialogs = require("tns-core-modules/ui/dialogs");
 
 export default {
     data() {
         return {
 
+            // Icons
+            signOutAltIcon: FontAwesome.getIcon(FontAwesome.Icon.SIGN_OUT_ALT),
         }
     },
 
     methods: {
         onStartInterview() {
             this.$navigateTo(Question, {clearHistory: true});
+        },
+
+        signOut() {
+            dialogs.confirm({
+                title: "Déconnection",
+                message: "Voulez-vous vraiment vous déconnecter?",
+                okButtonText: "Oui",
+                cancelButtonText: "Non"
+            }).then((yes) => {
+                if(yes) {
+                    this.$authService.logout();
+                }
+            })
         }
     }
 }
@@ -43,6 +68,17 @@ export default {
     background-color: $app-color;
     height: 60;
     border-radius: 10;
+}
+
+.signout-btn {
+    width: 50;
+    height: 50;
+    font-size: 18;
+    color: $app-color;
+    background-color: transparent;
+    border-width: 1;
+    border-color: transparent;
+    border-radius: 50;
 }
 </style>
 
