@@ -4,7 +4,7 @@
             <Label class="title" text="Interview.me" row="0" horizontalAlignment="center" />
 
             <StackLayout orientation="vertical" verticalAlignment="center" row="1">
-                <Button class="btn" text="COMMENCER UNE ENTREVUE" />
+                <Button class="btn" text="COMMENCER UNE ENTREVUE" @tap="onStartInterview" />
                 <Button class="btn" text="VOIR MES ENTREVUES" marginTop="30" />
             </StackLayout>
         </GridLayout>
@@ -12,8 +12,20 @@
 </template>
 
 <script>
+import Question from './Question';
+
 export default {
-    
+    data() {
+        return {
+
+        }
+    },
+
+    methods: {
+        onStartInterview() {
+            this.$navigateTo(Question, {clearHistory: true});
+        }
+    }
 }
 </script>
 

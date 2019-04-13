@@ -41,6 +41,7 @@ export const Icon = {
   INDUSTRY            :   0xf275,
   MAP_MARKER_ALT      :   0xf3c5,
   MEDKIT              :   0xf0fa,
+  MICROPHONE          :   0xf130,
   MINUS               :   0xf068,
   MONEY_BILL_ALT      :   0xf3d1,
   PENCIL_ALT          :   0xf303,
