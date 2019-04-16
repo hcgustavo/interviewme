@@ -33,15 +33,29 @@
 </template>
 
 <script>
+import BackendService from '../services/BackendService';
 import CountdownModal from './CountdownModal';
 import * as FontAwesome from '../utils/font-awesome';
+import { File, knownFolders } from 'tns-core-modules/file-system';
+import { TNSRecorder } from 'nativescript-audio';
+
+const dialogs = require("tns-core-modules/ui/dialogs");
+const audio = require('nativescript-audio');
+const backendService = new BackendService();
+const player = new audio.TNSPlayer();
+const recorder = new audio.TNSRecorder();
 
 export default {
+    props: ['questions'],
+
     data() {
         return {
             status: "",
             canRecord: false,
             isRecording: false,
+            lastRecordedAudioFile: "",
+            currentQuestionIndex: 0,
+            answers: [],
 
             // Icons
             microphoneIcon: FontAwesome.getIcon(FontAwesome.Icon.MICROPHONE),
@@ -53,16 +67,96 @@ export default {
         onPageLoaded() {
             this.$showModal(CountdownModal, {fullscreen: true})
             .then(() => {
-                this.status = "En train d'écouter la question...";
+                this.playQuestion(this.questions[this.currentQuestionIndex]);
+            })
+        },
+
+        playQuestion(question) {
+            this.status = "En train d'écouter la question...";
+            this.canRecord = false;
+
+            player.playFromUrl({
+                audioFile: question.downloadUrl,
+                loop: false,
+                completeCallback: () => {
+                    this.canRecord = true;
+                    this.status = "Enregistrez votre réponse";
+                },
+                errorCallback: (error) => {
+                    alert("Une erreur s'est produite");
+                    console.error(JSON.stringify(error));
+                },
+                infoCallback: (args) => {
+                    console.log(JSON.stringify(args));
+                }
+            })
+            .then(res => {
+                console.log(res);
+            })
+            .catch(error => {
+                console.log("Could not play audio: " + error);
+                alert("Une erreur s'est produite");
             })
         },
 
         recordAnswer() {
+            if(!TNSRecorder.CAN_RECORD()) {
+                alert("Cet appareil ne peut pas engistrer d'audio");
+                return;
+            }
+
+            const audioFolder = knownFolders.currentApp().getFolder('audio');
+            this.lastRecordedAudioFile = `${audioFolder.path}/${backendService.token}_${Date.now()}.m4a`;
+
+            this.isRecording = true;
+            recorder.start({
+                filename: this.lastRecordedAudioFile,
+                format: 2, //android.media.MediaRecorder.OutputFormat.MPEG_4
+                encoder: 3, //android.media.MediaRecorder.AudioEncoder.AAC
+                metering: false,
+                infoCallback: info => {
+                    console.log(JSON.stringify(info));
+                },
+                errorCallback: error => {
+                    console.error(JSON.stringify(error));
+                    this.isRecording = false;
+                }
+            })
+            .then(res => {
+                console.log(res);
+            })
+            .catch(error => {
+                this.isRecording = false;
+                console.error(error);
+            })
 
         },
 
         stopRecording() {
+            this.isRecording = false;
+            recorder.stop().then((res) => {
+                this.answers.push({
+                    question: this.questions[currentQuestionIndex],
+                    answer: this.getFile()
+                })
 
+                if(this.currentQuestionIndex === this.questions.length - 1) {
+                    // End session
+                    // Upload user's answers
+                } else {
+                    this.currentQuestionIndex++;
+                    this.$showModal(CountdownModal, {fullscreen: true})
+                    .then(() => {
+                        this.playQuestion(this.questions[this.currentQuestionIndex]);
+                    })   
+                }
+            })
+        },
+
+        getFile() {
+            const audioFolder = knownFolders.currentApp().getFolder('audio');
+            const recordedFile = audioFolder.getFile(this.lastRecordedAudioFile);
+            return recordedFile;
         }
     }
 }

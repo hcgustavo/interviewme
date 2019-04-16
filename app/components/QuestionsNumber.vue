@@ -1,5 +1,5 @@
 <template>
-    <Page>
+    <Page actionBarHidden="true">
         <GridLayout rows="auto, *, auto" padding="0">
             <Label 
             class="title"
@@ -16,13 +16,21 @@
 
             <Button
             text="COMMENCER"
-            @tap="start"
+            @tap="loadQuestions"
             row="2" />
         </GridLayout>
     </Page>
 </template>
 
 <script>
+import Question from './Question';
+import MyLoadingIndicator from '../utils/loading-indicator';
+import InterviewService from '../services/InterviewService';
+
+const dialogs = require("tns-core-modules/ui/dialogs");
+const interviewService = new InterviewService();
+const loadingIndicator = new MyLoadingIndicator();
+
 export default {
     data() {
         return {
@@ -36,8 +44,18 @@ export default {
             this.selectedItem = this.listOfItems[args.object.selectedIndex];
         },
 
-        start() {
-            this.$modal.close(this.selectedItem);
+        loadQuestions() {
+            loadingIndicator.show("Téléchargement de questions en cours...");
+            interviewService.loadQuestions(this.selectedItem)
+                .then(result => {
+                    loadingIndicator.hide();
+                    this.$navigateTo(Question, {clearHistory: true, props: {questions: result}});
+                })
+                .catch(error => {
+                    loadingIndicator.hide();
+                    console.error("Error loading questions: " + error);
+                    alert("Une erreur s'est produite.");
+                })  
         }
     }
 }

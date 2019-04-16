@@ -20,14 +20,10 @@
 
 <script>
 import Question from './Question';
-import QuestionsNumberModal from './QuestionsNumberModal';
+import QuestionsNumber from './QuestionsNumber';
 import * as FontAwesome from '../utils/font-awesome';
-import MyLoadingIndicator from '../utils/loading-indicator';
-import InterviewService from '../services/InterviewService';
 
 const dialogs = require("tns-core-modules/ui/dialogs");
-const interviewService = new InterviewService();
-const loadingIndicator = new MyLoadingIndicator();
 
 export default {
     data() {
@@ -40,22 +36,7 @@ export default {
 
     methods: {
         onStartInterview() {
-            this.$showModal(QuestionsNumberModal, {fullscreen: true})
-            .then(value => {
-                //Load questions
-                loadingIndicator.show("Téléchargement de questions en cours...");
-                interviewService.loadQuestions(value)
-                .then(result => {
-                    loadingIndicator.hide();
-                    console.log(JSON.stringify(result));
-                    //this.$navigateTo(Question, {clearHistory: true, props: {questions: result}});
-                })
-                .catch(error => {
-                    loadingIndicator.hide();
-                    console.error("Error loading questions: " + error);
-                    alert("Une erreur s'est produite.");
-                })   
-            })
+            this.$navigateTo(QuestionsNumber);
         },
 
         signOut() {
