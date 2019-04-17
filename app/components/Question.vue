@@ -79,6 +79,7 @@ export default {
                 audioFile: question.downloadUrl,
                 loop: false,
                 completeCallback: () => {
+                    console.log("Audio completed playing...");
                     this.canRecord = true;
                     this.status = "Enregistrez votre réponse";
                 },
@@ -91,7 +92,7 @@ export default {
                 }
             })
             .then(res => {
-                console.log(res);
+                console.log("Playing audio...");
             })
             .catch(error => {
                 console.log("Could not play audio: " + error);
@@ -123,26 +124,27 @@ export default {
                 }
             })
             .then(res => {
-                console.log(res);
+                console.log("Recording...");
             })
             .catch(error => {
                 this.isRecording = false;
-                console.error(error);
+                console.error("Error recording: " + error);
             })
 
         },
 
         stopRecording() {
-            this.isRecording = false;
             recorder.stop().then((res) => {
+                this.isRecording = false;
                 this.answers.push({
-                    question: this.questions[currentQuestionIndex],
+                    question: this.questions[this.currentQuestionIndex].id,
                     answer: this.getFile()
                 })
 
                 if(this.currentQuestionIndex === this.questions.length - 1) {
                     // End session
                     // Upload user's answers
+                    console.log(JSON.stringify(this.answers));
                 } else {
                     this.currentQuestionIndex++;
                     this.$showModal(CountdownModal, {fullscreen: true})
@@ -150,6 +152,9 @@ export default {
                         this.playQuestion(this.questions[this.currentQuestionIndex]);
                     })   
                 }
+            })
+            .catch(error => {
+                console.error("Error stopping recording: " + error);
             })
         },
 
