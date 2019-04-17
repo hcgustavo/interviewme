@@ -10,7 +10,9 @@ export default class InterviewService {
         .then(querySnapshot => {
             let allQuestions = [];
             querySnapshot.forEach(doc => {
-                allQuestions.push(doc.data());
+                let tmp = doc.data();
+                tmp.id = doc.id;
+                allQuestions.push(tmp);
             });
             return getRandomQuestions(allQuestions, numberOfQuestions);
         });
