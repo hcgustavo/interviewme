@@ -1,4 +1,7 @@
 const firebase = require("nativescript-plugin-firebase/app");
+import BackendService from './BackendService';
+
+const backendService = new BackendService();
 
 export default class InterviewService {
 
@@ -18,8 +21,22 @@ export default class InterviewService {
         });
     }
 
-    saveUserInterview(interview) {
+    uploadUserAnswers(answers) {
+        let uploadPromises = [];
+        answers.forEach(answer => {
+            let file = answer.answer_file;
 
+            let metadata = {
+                customMetadata: {
+                    user_uid: backendService.token,
+                    question_id: answer.question_id
+                }
+            };
+
+            uploadPromises.push(firebase.storage().ref().child('answers/' + file.name).put(file, metadata));
+        });
+
+        return Promise.all(uploadPromises);
     }
     
 }
