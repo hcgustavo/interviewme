@@ -33,17 +33,23 @@
 </template>
 
 <script>
+import Main from './Main';
 import BackendService from '../services/BackendService';
+import InterviewService from '../services/InterviewService';
 import CountdownModal from './CountdownModal';
 import * as FontAwesome from '../utils/font-awesome';
 import { File, knownFolders } from 'tns-core-modules/file-system';
 import { TNSRecorder } from 'nativescript-audio';
+import MyLoadingIndicator from '../utils/loading-indicator';
 
 const dialogs = require("tns-core-modules/ui/dialogs");
 const audio = require('nativescript-audio');
+
 const backendService = new BackendService();
+const interviewService = new InterviewService();
 const player = new audio.TNSPlayer();
 const recorder = new audio.TNSRecorder();
+const loadingIndicator = new MyLoadingIndicator();
 
 export default {
     props: ['questions'],
@@ -53,7 +59,8 @@ export default {
             status: "",
             canRecord: false,
             isRecording: false,
-            lastRecordedAudioFile: "",
+            lastRecordedAudioName: "",
+            lastRecordedAudioPath: "",
             currentQuestionIndex: 0,
             answers: [],
 
@@ -107,11 +114,13 @@ export default {
             }
 
             const audioFolder = knownFolders.currentApp().getFolder('audio');
-            this.lastRecordedAudioFile = `${audioFolder.path}/${backendService.token}_${Date.now()}.m4a`;
+
+            this.lastRecordedAudioName = `${backendService.token}_${Date.now().toString()}.m4a`;
+            this.lastRecordedAudioPath = `${audioFolder.path}/${this.lastRecordedAudioName}`;
 
             this.isRecording = true;
             recorder.start({
-                filename: this.lastRecordedAudioFile,
+                filename: this.lastRecordedAudioPath,
                 format: 2, //android.media.MediaRecorder.OutputFormat.MPEG_4
                 encoder: 3, //android.media.MediaRecorder.AudioEncoder.AAC
                 metering: false,
@@ -135,16 +144,35 @@ export default {
 
         stopRecording() {
             recorder.stop().then((res) => {
+                console.log("Stopped recording");
                 this.isRecording = false;
                 this.answers.push({
-                    question: this.questions[this.currentQuestionIndex].id,
-                    answer: this.getFile()
+                    question_id: this.questions[this.currentQuestionIndex].id,
+                    answer_file: this.getFile()
                 })
 
                 if(this.currentQuestionIndex === this.questions.length - 1) {
                     // End session
+                    loadingIndicator.show("En train de téléverser vos réponses...");
+
                     // Upload user's answers
-                    console.log(JSON.stringify(this.answers));
+                    interviewService.uploadUserAnswers(this.answers)
+                    .then(results => {
+                        loadingIndicator.hide();
+                        dialogs.alert({
+                        title: "Bon travail!",
+                        message: "Votre entrevue a été enrigistré avec succès.",
+                        okButtonText: "OK"
+                        }).then(() => {
+                            // Go to main page
+                            this.$navigateTo(Main, {clearHistory: true});
+                        })
+                    })
+                    .catch(error => {
+                        loadingIndicator.hide();
+                        console.error("Error uploading answers: " + error);
+                        alert("Error uploading answers");
+                    })
                 } else {
                     this.currentQuestionIndex++;
                     this.$showModal(CountdownModal, {fullscreen: true})
@@ -160,7 +188,7 @@ export default {
 
         getFile() {
             const audioFolder = knownFolders.currentApp().getFolder('audio');
-            const recordedFile = audioFolder.getFile(this.lastRecordedAudioFile);
+            const recordedFile = audioFolder.getFile(this.lastRecordedAudioName);
             return recordedFile;
         }
     }
