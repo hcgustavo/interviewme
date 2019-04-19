@@ -19,6 +19,8 @@ Vue.config.silent = (TNS_ENV === 'production')
 
 Vue.prototype.$authService = authService
 
+Vue.registerElement('CardView', () => require('nativescript-cardview').CardView);
+
 firebase.init({
   onAuthStateChanged: data => {
     if(data.loggedIn) {

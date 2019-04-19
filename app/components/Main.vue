@@ -12,15 +12,15 @@
 
             <StackLayout orientation="vertical" verticalAlignment="center" row="2">
                 <Button class="btn" text="COMMENCER UNE ENTREVUE" @tap="onStartInterview" />
-                <Button class="btn" text="VOIR MES ENTREVUES" marginTop="30" />
+                <Button class="btn" marginTop="30" text="VOIR MES ENTREVUES" @tap="onSeeInterviews" />
             </StackLayout>
         </GridLayout>
     </Page>
 </template>
 
 <script>
-import Question from './Question';
 import QuestionsNumber from './QuestionsNumber';
+import UserInterviews from './UserInterviews';
 import * as FontAwesome from '../utils/font-awesome';
 
 const dialogs = require("tns-core-modules/ui/dialogs");
@@ -37,6 +37,10 @@ export default {
     methods: {
         onStartInterview() {
             this.$navigateTo(QuestionsNumber);
+        },
+
+        onSeeInterviews() {
+            this.$navigateTo(UserInterviews);
         },
 
         signOut() {
