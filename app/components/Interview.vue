@@ -156,8 +156,8 @@ export default {
                     loadingIndicator.show("En train de téléverser vos réponses...");
 
                     // Upload user's answers
-                    interviewService.uploadUserAnswers(this.answers)
-                    .then(results => {
+                    interviewService.saveUserInterview(this.answers)
+                    .then(result => {
                         loadingIndicator.hide();
                         dialogs.alert({
                         title: "Bon travail!",
@@ -165,13 +165,23 @@ export default {
                         okButtonText: "OK"
                         }).then(() => {
                             // Go to main page
+                            player.dispose();
+                            recorder.dispose();
                             this.$navigateTo(Main, {clearHistory: true});
                         })
                     })
                     .catch(error => {
                         loadingIndicator.hide();
                         console.error("Error uploading answers: " + error);
-                        alert("Error uploading answers");
+                        dialogs.alert({
+                            title: "Oups...",
+                            message: "Impossible de sauvegarder votre entrevue. Essayez de nouveau plus tard.",
+                            okButtonText: "OK"
+                        }).then(() => {
+                            player.dispose();
+                            recorder.dispose();
+                            this.$navigateTo(Main, {clearHistory: true});
+                        })
                     })
                 } else {
                     this.currentQuestionIndex++;

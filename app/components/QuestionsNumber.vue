@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import Question from './Question';
+import Interview from './Interview';
 import MyLoadingIndicator from '../utils/loading-indicator';
 import InterviewService from '../services/InterviewService';
 
@@ -49,7 +49,7 @@ export default {
             interviewService.loadQuestions(this.selectedItem)
                 .then(result => {
                     loadingIndicator.hide();
-                    this.$navigateTo(Question, {clearHistory: true, props: {questions: result}});
+                    this.$navigateTo(Interview, {clearHistory: true, props: {questions: result}});
                 })
                 .catch(error => {
                     loadingIndicator.hide();
