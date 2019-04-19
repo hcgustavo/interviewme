@@ -101,6 +101,40 @@ export default class InterviewService {
             return interviews.map(i => i.data());
         })
     }
+
+    /**
+     * Load an user's interview session
+     */
+    loadUserInterview(interview) {
+        let questions = [];
+        let answers = [];
+
+        let questionsPromises = [];
+        interview.questions.forEach(question => {
+            questionsPromises.push(firebase.firestore().collection('questions').doc(question).get());
+        });
+        return Promise.all(questionsPromises)
+        .then(questionsResult => {
+            questionsResult.forEach(qr => {
+                questions.push(qr.data());
+            })
+
+            let answersPromises = [];
+            interview.answers.forEach(answer => {
+                answersPromises.push(firebase.firestore().collection('answers').doc(answer).get());
+            });
+            return Promise.all(answersPromises);
+        })
+        .then(answersResult => {
+            answersResult.forEach(ar => {
+                answers.push(ar.data());
+            })
+            return {
+                questions: questions,
+                answers: answers
+            }
+        })
+    }
 }
 
 const getRandomQuestions = function(questions, numberToSelect) {

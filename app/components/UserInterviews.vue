@@ -72,6 +72,7 @@ export default {
 
         onInterviewTap({item}) {
             // Go to interview playback page
+            console.log(JSON.stringify(item));
             this.$navigateTo(PlaybackInterview, {props: {interview: item}});
         },
 

@@ -92,8 +92,8 @@ export default {
                     alert("Une erreur s'est produite");
                     console.error(JSON.stringify(error));
                 },
-                infoCallback: (args) => {
-                    console.log(JSON.stringify(args));
+                infoCallback: (info) => {
+                    console.log(JSON.stringify(info));
                 }
             })
             .then(res => {
