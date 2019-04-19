@@ -98,7 +98,7 @@ export default class InterviewService {
             return Promise.all(interviewsPromises);
         })
         .then(interviews => {
-            return interviews.map(i => i.data());
+            return interviews;
         })
     }
 
@@ -134,6 +134,15 @@ export default class InterviewService {
                 answers: answers
             }
         })
+    }
+
+    /**
+     * Remove an interview session from Firestore
+     */
+    removeInterviewById(interviewId) {
+        return firebase.firestore().collection('users').doc(backendService.token).update({
+            interviews2: firebase.firestore().FieldValue().arrayRemove(interviewId)
+        });
     }
 }
 

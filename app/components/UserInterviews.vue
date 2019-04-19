@@ -9,8 +9,11 @@
             row="1"
             v-if="isLoaded && interviews.length === 0" />
             <RadListView 
+            ref="listView"
             marginTop="15"
             for="(interview, index) in interviews" 
+            swipeActions="true"
+            @itemSwipeProgressStarted="onSwipeStarted"
             @itemTap="onInterviewTap" 
             row="1">
                 <v-template>
@@ -26,10 +29,18 @@
                             color="#329be8"
                             fontSize="22"
                             fontWeight="bold"
-                            :text="formatCreatedDate(interview.created)" 
+                            :text="formatCreatedDate(interview.data().created)" 
                             row="1" />
                         </GridLayout>
                     </CardView>
+                </v-template>
+
+                <v-template name="itemswipe">
+                    <GridLayout columns="*, auto">
+                        <GridLayout id="delete-view" col="1" columns="*" class="swipe-item right" @tap="onRightSwipeClick">
+                            <Label class="fa-solid" :text="trashIcon" verticalAlignment="center" horizontalAlignment="center" />
+                        </GridLayout>
+                    </GridLayout>
                 </v-template>
             </RadListView>
         </GridLayout>
@@ -39,6 +50,9 @@
 <script>
 import PlaybackInterview from './PlaybackInterview';
 import InterviewService from '../services/InterviewService';
+import * as FontAwesome from '../utils/font-awesome';
+
+const dialogs = require("tns-core-modules/ui/dialogs");
 
 const interviewService = new InterviewService();
 
@@ -47,6 +61,9 @@ export default {
         return {
             interviews: [],
             isLoaded: false,
+
+            //Icons
+            trashIcon: FontAwesome.getIcon(FontAwesome.Icon.TRASH),
         }
     },
 
@@ -61,7 +78,6 @@ export default {
                 this.$loadingIndicator.hide();
                 this.isLoaded = true;
                 this.interviews = [...interviews];
-                console.log(JSON.stringify(this.interviews));
             })
             .catch(error => {
                 this.$loadingIndicator.hide();
@@ -73,7 +89,7 @@ export default {
         onInterviewTap({item}) {
             // Go to interview playback page
             console.log(JSON.stringify(item));
-            this.$navigateTo(PlaybackInterview, {props: {interview: item}});
+            this.$navigateTo(PlaybackInterview, {props: {interview: item.data()}});
         },
 
         formatCreatedDate(created) {
@@ -84,7 +100,37 @@ export default {
             let formattedDate = `${date.getFullYear()}-${month}-${day}`;
             let formattedTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
             return formattedDate + ' ' + formattedTime;
-        }
+        },
+
+        onSwipeStarted ({ data, object }) {
+            const swipeLimits = data.swipeLimits;
+            const swipeView = object;
+            const rightItem = swipeView.getViewById('delete-view');
+            swipeLimits.right = rightItem.getMeasuredWidth();
+            swipeLimits.threshold = rightItem.getMeasuredWidth() / 2;
+        },
+
+        onRightSwipeClick ({object}) {
+            dialogs.confirm({
+                title: "Attention!",
+                message: "Voulez-vous vraiment supprimer cette entrevue?",
+                okButtonText: "Oui",
+                cancelButtonText: "Non"
+            }).then(yes => {
+                if(yes) {
+                    interviewService.removeInterviewById(object.bindingContext.id)
+                    .then(result => {
+                        this.interviews.splice(this.interviews.indexOf(object.bindingContext), 1);
+                        alert("Votre entrevue a été supprimée");
+                    })
+                    .catch(error => {
+                        console.error("Error removing interview: " + error);
+                        alert("Une erreur s'est produite");
+                    })
+                }
+                this.$refs.listView.notifySwipeToExecuteFinished();
+            })
+        },
     }
 }
 </script>
@@ -96,6 +142,10 @@ export default {
     color: $app-color;
     font-size: 22;
     font-weight: bold;
+}
+
+.swipe-item {
+    width: 50;
 }
 </style>
 
