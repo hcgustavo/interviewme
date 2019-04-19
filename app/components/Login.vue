@@ -1,5 +1,5 @@
 <template>
-    <Page actionBarHidden="true">
+    <Page actionBarHidden="true" androidStatusBarBackground="#fff">
         <GridLayout rows="auto, auto, *">
             <Image
             src="~/assets/images/man-boss.png" 

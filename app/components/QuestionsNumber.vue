@@ -24,12 +24,10 @@
 
 <script>
 import Interview from './Interview';
-import MyLoadingIndicator from '../utils/loading-indicator';
 import InterviewService from '../services/InterviewService';
 
 const dialogs = require("tns-core-modules/ui/dialogs");
 const interviewService = new InterviewService();
-const loadingIndicator = new MyLoadingIndicator();
 
 export default {
     data() {
@@ -45,14 +43,14 @@ export default {
         },
 
         loadQuestions() {
-            loadingIndicator.show("Téléchargement de questions en cours...");
+            this.$loadingIndicator.show("Téléchargement de questions en cours...");
             interviewService.loadQuestions(this.selectedItem)
                 .then(result => {
-                    loadingIndicator.hide();
+                    this.$loadingIndicator.hide();
                     this.$navigateTo(Interview, {clearHistory: true, props: {questions: result}});
                 })
                 .catch(error => {
-                    loadingIndicator.hide();
+                    this.$loadingIndicator.hide();
                     console.error("Error loading questions: " + error);
                     alert("Une erreur s'est produite.");
                 })  

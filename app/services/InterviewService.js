@@ -5,6 +5,9 @@ const backendService = new BackendService();
 
 export default class InterviewService {
 
+    /**
+     * Load the amount of questions as requested by the user
+     */
     loadQuestions(numberOfQuestions) {
         return firebase.firestore().collection("questions").get()
         .then(querySnapshot => {
@@ -21,7 +24,11 @@ export default class InterviewService {
         });
     }
 
+    /**
+     * Save user's interview session on Firestore
+     */
     saveUserInterview(answers) {
+        // Upload user's answers audio files to Storage
         let uploadPromises = [];
         answers.forEach(answer => {
             let file = answer.answer_file;
@@ -29,6 +36,7 @@ export default class InterviewService {
         });
         return Promise.all(uploadPromises)
         .then(uploadResults => {
+            // Get download URL for the user's answers
             let downloadUrlPromises = [];
             uploadResults.forEach((uploadRes, index) => {
                 downloadUrlPromises.push(firebase.storage().ref().child(`answers/${answers[index].answer_file.name}`).getDownloadURL());
@@ -36,6 +44,7 @@ export default class InterviewService {
             return Promise.all(downloadUrlPromises)
         })
         .then(downlodUrlResults => {
+            // Create user's answers register o Firestore (file name + download url)
             let docs = [];
             downlodUrlResults.forEach((downloadUrlRes, index) => {
                 docs.push({
@@ -50,22 +59,48 @@ export default class InterviewService {
             return Promise.all(docPromises)
         })
         .then(docsResult => {
+            // Create user's interview session on Firestore
             let answersId = [];
             docsResult.forEach((doc, index) => {
                 answersId.push(doc.id);
             })
             return firebase.firestore().collection('interviews').add({
                 questions: answers.map(a => a.question_id),
-                answers: answersId
+                answers: answersId,
+                created: new Date().toString()
             });
         })
         .then(interviewResult => {
+            // Save user's interview id on user's register on Firestore
             return firebase.firestore().collection('users').doc(backendService.token).update({
                 interviews: firebase.firestore().FieldValue().arrayUnion(interviewResult.id)
             });
         })
     }
-    
+
+    /**
+     * Load user's interview sessions
+     */
+    loadUserInterviews() {
+        return firebase.firestore().collection('users').doc(backendService.token).get()
+        .then(docSnapshot => {
+            let interviewsIds = [];
+            if(docSnapshot.exists) {
+                interviewsIds = [...docSnapshot.data().interviews];
+            }
+            return interviewsIds;
+        })
+        .then(interviewsIds => {
+            let interviewsPromises = [];
+            interviewsIds.forEach(interviewId => {
+                interviewsPromises.push(firebase.firestore().collection('interviews').doc(interviewId).get());
+            });
+            return Promise.all(interviewsPromises);
+        })
+        .then(interviews => {
+            return interviews.map(i => i.data());
+        })
+    }
 }
 
 const getRandomQuestions = function(questions, numberToSelect) {

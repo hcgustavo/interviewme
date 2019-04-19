@@ -1,5 +1,5 @@
 <template>
-    <Page actionBarHidden="true" @loaded="onPageLoaded">
+    <Page actionBarHidden="true" @loaded="onPageLoaded" androidStatusBarBackground="#fff">
         <GridLayout rows="auto, auto, *">
             <Image 
             src="~/assets/images/man-boss.png" 
@@ -40,7 +40,6 @@ import CountdownModal from './CountdownModal';
 import * as FontAwesome from '../utils/font-awesome';
 import { File, knownFolders } from 'tns-core-modules/file-system';
 import { TNSRecorder } from 'nativescript-audio';
-import MyLoadingIndicator from '../utils/loading-indicator';
 
 const dialogs = require("tns-core-modules/ui/dialogs");
 const audio = require('nativescript-audio');
@@ -49,7 +48,6 @@ const backendService = new BackendService();
 const interviewService = new InterviewService();
 const player = new audio.TNSPlayer();
 const recorder = new audio.TNSRecorder();
-const loadingIndicator = new MyLoadingIndicator();
 
 export default {
     props: ['questions'],
@@ -153,33 +151,32 @@ export default {
 
                 if(this.currentQuestionIndex === this.questions.length - 1) {
                     // End session
-                    loadingIndicator.show("En train de téléverser vos réponses...");
+                    player.dispose();
+                    recorder.dispose();
+
+                    this.$loadingIndicator.show("En train de téléverser vos réponses...");
 
                     // Upload user's answers
                     interviewService.saveUserInterview(this.answers)
                     .then(result => {
-                        loadingIndicator.hide();
+                        this.$loadingIndicator.hide();
                         dialogs.alert({
                         title: "Bon travail!",
                         message: "Votre entrevue a été enrigistré avec succès.",
                         okButtonText: "OK"
                         }).then(() => {
                             // Go to main page
-                            player.dispose();
-                            recorder.dispose();
                             this.$navigateTo(Main, {clearHistory: true});
                         })
                     })
                     .catch(error => {
-                        loadingIndicator.hide();
+                        this.$loadingIndicator.hide();
                         console.error("Error uploading answers: " + error);
                         dialogs.alert({
                             title: "Oups...",
                             message: "Impossible de sauvegarder votre entrevue. Essayez de nouveau plus tard.",
                             okButtonText: "OK"
                         }).then(() => {
-                            player.dispose();
-                            recorder.dispose();
                             this.$navigateTo(Main, {clearHistory: true});
                         })
                     })

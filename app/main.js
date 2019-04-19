@@ -5,6 +5,8 @@ import store from './store';
 import BackendService from './services/BackendService'
 import AuthService from './services/AuthService'
 import firebase from 'nativescript-plugin-firebase'
+import RadListView from 'nativescript-ui-listview/vue';
+import MyLoadingIndicator from './utils/loading-indicator';
 
 import VueDevtools from 'nativescript-vue-devtools'
 
@@ -18,8 +20,10 @@ if(TNS_ENV !== 'production') {
 Vue.config.silent = (TNS_ENV === 'production')
 
 Vue.prototype.$authService = authService
+Vue.prototype.$loadingIndicator = new MyLoadingIndicator()
 
 Vue.registerElement('CardView', () => require('nativescript-cardview').CardView);
+Vue.use(RadListView);
 
 firebase.init({
   onAuthStateChanged: data => {
