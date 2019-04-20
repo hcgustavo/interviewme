@@ -49,11 +49,37 @@ export default {
 
     methods: {
         loginFacebook() {
-            this.$authService.loginFacebook();
+            this.$authService.loginFacebook()
+            .then(result => {
+                this.$feedback.success({
+                    title: "Bienvenue :)",
+                    message: "Vous êtes maintenant connecté(e) via Faceebok."
+                })
+            })
+            .catch(error => {
+                console.error("Error connecting via Facebook: " + error);
+                this.$feedback.error({
+                    title: "Oups :(",
+                    message: "Connection via Facebook a échoué. Veuillez essayer de nouveau plus tard."
+                })
+            })
         },
 
         loginGoogle() {
-            this.$authService.loginGoogle();
+            this.$authService.loginGoogle()
+            .then(result => {
+                this.$feedback.success({
+                    title: "Bienvenue :)",
+                    message: "Vous êtes maintenant connecté(e) via Google."
+                })
+            })
+            .catch(error => {
+                console.error("Error connecting via Google: " + error);
+                this.$feedback.error({
+                    title: "Oups :(",
+                    message: "Connection via Google a échoué. Veuillez essayer de nouveau plus tard."
+                })
+            })
         }
     }
 }

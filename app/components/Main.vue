@@ -53,7 +53,20 @@ export default {
                 cancelButtonText: "Non"
             }).then((yes) => {
                 if(yes) {
-                    this.$authService.logout();
+                    this.$authService.logout()
+                    .then(() => {
+                        this.$feedback.success({
+                            title: "À bientôt!",
+                            message: "Vous êtes maintenant déconnecté(e)."
+                        })
+                    })
+                    .catch(error => {
+                        console.error("Error logging out: " + error);
+                        this.$feedback.error({
+                            title: "Oups :(",
+                            message: "Impossible de vous déconnecter. Veuillez essayer plus tard."
+                        })
+                    })
                 }
             })
         }

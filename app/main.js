@@ -8,6 +8,8 @@ import firebase from 'nativescript-plugin-firebase'
 import RadListView from 'nativescript-ui-listview/vue';
 import MyLoadingIndicator from './utils/loading-indicator';
 
+const FeedbackPlugin = require('nativescript-feedback');
+
 import VueDevtools from 'nativescript-vue-devtools'
 
 export const backendService = new BackendService()
@@ -21,6 +23,7 @@ Vue.config.silent = (TNS_ENV === 'production')
 
 Vue.prototype.$authService = authService
 Vue.prototype.$loadingIndicator = new MyLoadingIndicator()
+Vue.prototype.$feedback = new FeedbackPlugin.Feedback();
 
 Vue.registerElement('CardView', () => require('nativescript-cardview').CardView);
 Vue.use(RadListView);

@@ -1,6 +1,7 @@
 import { getString, setString } from 'tns-core-modules/application-settings'
 
 const tokenKey = "token";
+const photoKey = "photo";
 
 /**
  * Parent service class. Has common configs and methods.
@@ -19,5 +20,12 @@ export default class BackendService {
     setString(tokenKey, newToken);
   }
 
+  get photo() {
+    return getString(photoKey);
+  }
+
+  set photo(newPhoto) {
+    setString(photoKey, newPhoto);
+  }
   
 }

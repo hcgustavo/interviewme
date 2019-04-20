@@ -52,7 +52,10 @@ export default {
                 .catch(error => {
                     this.$loadingIndicator.hide();
                     console.error("Error loading questions: " + error);
-                    alert("Une erreur s'est produite.");
+                    this.$feedback.error({
+                        title: "Oups :(",
+                        message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                    })
                 })  
         }
     }

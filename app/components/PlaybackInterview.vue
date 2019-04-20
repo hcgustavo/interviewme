@@ -51,7 +51,10 @@ export default {
             .catch(error => {
                 console.error("Error loading interview session: " + error);
                 this.$loadingIndicator.hide();
-                alert("Une erreur s'est produite");
+                this.$feedback.error({
+                    title: "Oups :(",
+                    message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                })
             })
         },
 
@@ -74,13 +77,20 @@ export default {
                         this.isPlayingback = false;
                         player.dispose();
                         console.log("Done playingback interview");
+                        this.$feedback.info({
+                            title: "C'est terminé!",
+                            message: "Vous avez réécouté toute votre entrevue."
+                        })
                     }
                 },
                 errorCallback: (error) => {
                     this.isPlayingback = false;
                     player.dispose();
-                    alert("Une erreur s'est produite");
                     console.error(JSON.stringify(error));
+                    this.$feedback.error({
+                        title: "Oups :(",
+                        message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                    })
                 },
                 infoCallback: (info) => {
                     console.log(JSON.stringify(info));
@@ -93,7 +103,10 @@ export default {
                 this.isPlayingback = false;
                 player.dispose();
                 console.error("Error playing audio: " + error);
-                alert("Une erreur s'est produite");
+                this.$feedback.error({
+                    title: "Oups :(",
+                    message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                })
             })
         },
 

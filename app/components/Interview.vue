@@ -89,8 +89,11 @@ export default {
                     this.status = "Enregistrez votre réponse";
                 },
                 errorCallback: (error) => {
-                    alert("Une erreur s'est produite");
                     console.error(JSON.stringify(error));
+                    this.$feedback.error({
+                        title: "Oups :(",
+                        message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                    })
                 },
                 infoCallback: (info) => {
                     console.log(JSON.stringify(info));
@@ -101,13 +104,19 @@ export default {
             })
             .catch(error => {
                 console.log("Could not play audio: " + error);
-                alert("Une erreur s'est produite");
+                this.$feedback.error({
+                    title: "Oups :(",
+                    message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                })
             })
         },
 
         recordAnswer() {
             if(!TNSRecorder.CAN_RECORD()) {
-                alert("Cet appareil ne peut pas engistrer d'audio");
+                this.$feedback.info({
+                        title: "Oups :(",
+                        message: "Cet appareil ne peut pas enregistrer d'audio."
+                })
                 return;
             }
 
@@ -126,8 +135,12 @@ export default {
                     console.log(JSON.stringify(info));
                 },
                 errorCallback: error => {
-                    console.error(JSON.stringify(error));
                     this.isRecording = false;
+                    console.error(JSON.stringify(error));
+                    this.$feedback.error({
+                        title: "Oups :(",
+                        message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                    })
                 }
             })
             .then(res => {
@@ -136,6 +149,10 @@ export default {
             .catch(error => {
                 this.isRecording = false;
                 console.error("Error recording: " + error);
+                this.$feedback.error({
+                    title: "Oups :(",
+                    message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                })
             })
 
         },
@@ -190,6 +207,10 @@ export default {
             })
             .catch(error => {
                 console.error("Error stopping recording: " + error);
+                this.$feedback.error({
+                        title: "Oups :(",
+                        message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                })
             })
         },
 

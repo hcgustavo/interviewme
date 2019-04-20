@@ -82,7 +82,10 @@ export default {
             .catch(error => {
                 this.$loadingIndicator.hide();
                 console.error("Error loading interviews: " + error);
-                alert("Une erreur s'est produite.");
+                this.$feedback.error({
+                    title: "Oups :(",
+                    message: "Une erreur s'est produite lors de le téléchargement de vos entrevues. Veuillez essayer de nouveau plus tard."
+                })
             })
         },
 
@@ -121,11 +124,17 @@ export default {
                     interviewService.removeInterviewById(object.bindingContext.id)
                     .then(result => {
                         this.interviews.splice(this.interviews.indexOf(object.bindingContext), 1);
-                        alert("Votre entrevue a été supprimée");
+                        this.$feedback.success({
+                            title: "C'est fait!",
+                            message: "Votre entrevue a été supprimée avec succès."
+                        })
                     })
                     .catch(error => {
                         console.error("Error removing interview: " + error);
-                        alert("Une erreur s'est produite");
+                        this.$feedback.error({
+                            title: "Oups :(",
+                            message: "Une erreur s'est produite. Veuillez essayer de nouveau plus tard."
+                        })
                     })
                 }
                 this.$refs.listView.notifySwipeToExecuteFinished();

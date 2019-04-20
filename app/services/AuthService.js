@@ -9,6 +9,7 @@ export default class AuthService extends BackendService {
             type: firebase.LoginType.FACEBOOK
         })
         backendService.token = result.uid;
+        backendService.photo = result.photoURL;
         return JSON.stringify(result);
     }
 
@@ -17,6 +18,7 @@ export default class AuthService extends BackendService {
             type: firebase.LoginType.GOOGLE
         })
         backendService.token = result.uid;
+        backendService.photo = result.photoURL;
         return JSON.stringify(result);
     }
 
