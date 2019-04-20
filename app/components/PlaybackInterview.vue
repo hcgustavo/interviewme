@@ -46,7 +46,6 @@ export default {
             interviewService.loadUserInterview(this.interview)
             .then(result => {
                 this.makePlaybackAudios(result.questions, result.answers);
-                console.log("Playback audios size = " + this.playbackAudios.length);
                 this.$loadingIndicator.hide();
             })
             .catch(error => {
@@ -106,16 +105,6 @@ export default {
                 this.playbackAudios.push(question.downloadUrl);
                 this.playbackAudios.push(answers[index].downloadUrl);
             })
-
-            // for(let i = 0; i < size; i++) {
-            //     if(isQuestion) {
-            //         this.playbackAudios[i] = questions[i].downloadUrl;
-            //     }
-            //     else if(!isQuestion) {
-            //         this.playbackAudios[i] = answers[i].downloadUrl;
-            //     }
-            //     isQuestion = !isQuestion;
-            // }
         }
     }
 }
