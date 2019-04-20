@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "android:build:release": "rm -rf platforms && tns build android --release --key-store-path C:/Development/my-release-key.keystore --key-store-password 4ndr01dD3v --key-store-alias my_keystore --key-store-alias-password 4ndr01dD3v"
+    "android:build:release": "rm -rf platforms && tns build android --bundle --release --key-store-path C:/Development/my-release-key.keystore --key-store-password 4ndr01dD3v --key-store-alias my_keystore --key-store-alias-password 4ndr01dD3v"
   },
   "dependencies": {
     "@vue/devtools": "^5.0.6",
