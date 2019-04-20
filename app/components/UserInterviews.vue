@@ -100,8 +100,12 @@ export default {
             let day = (date.getDate() < 10) ? '0' + String(date.getDate()) : date.getDate();
             let month = (date.getMonth()+1 < 10) ? '0' + String(date.getMonth()+1) : date.getMonth()+1;
 
+            let hours = (date.getHours() < 10) ? '0' + String(date.getHours()) : date.getHours();
+            let minutes = (date.getMinutes() < 10) ? '0' + String(date.getMinutes()) : date.getMinutes();
+            let seconds = (date.getSeconds() < 10) ? '0' + String(date.getSeconds()) : date.getSeconds();
+
             let formattedDate = `${date.getFullYear()}-${month}-${day}`;
-            let formattedTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+            let formattedTime = `${hours}:${minutes}:${seconds}`;
             return formattedDate + ' ' + formattedTime;
         },
 
