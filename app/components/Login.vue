@@ -53,7 +53,7 @@ export default {
             .then(result => {
                 this.$feedback.success({
                     title: "Bienvenue :)",
-                    message: "Vous êtes maintenant connecté(e) via Faceebok."
+                    message: "Vous êtes maintenant connecté(e) via Facebook."
                 })
             })
             .catch(error => {
