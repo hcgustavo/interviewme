@@ -1,19 +1,21 @@
 <template>
     <Page actionBarHidden="true" androidStatusBarBackground="#fff">
-        <GridLayout rows="auto, auto, *">
-            <Button 
-            class="fa-solid signout-btn" 
-            :text="signOutAltIcon" 
-            horizontalAlignment="right" 
-            @tap="signOut"
-            row="0" />
+        <GridLayout rows="auto, 3*, *">
+            <Label class="title" marginTop="15" text="Interview.me" horizontalAlignment="center" row="0" />
 
-            <Label class="title" text="Interview.me" horizontalAlignment="center" row="1" />
-
-            <StackLayout orientation="vertical" verticalAlignment="center" row="2">
+            <StackLayout orientation="vertical" verticalAlignment="center" row="1">
                 <Button class="btn" text="COMMENCER UNE ENTREVUE" @tap="onStartInterview" />
                 <Button class="btn" marginTop="30" text="VOIR MES ENTREVUES" @tap="onSeeInterviews" />
             </StackLayout>
+
+            <DockLayout stretchLastChild="false" row="2">
+                <Button 
+                class="fa-solid signout-btn" 
+                :text="signOutAltIcon" 
+                horizontalAlignment="center" 
+                @tap="signOut"
+                dock="bottom" />
+            </DockLayout>
         </GridLayout>
     </Page>
 </template>
