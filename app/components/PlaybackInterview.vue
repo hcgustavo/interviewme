@@ -7,7 +7,7 @@
             row="0" />
 
             <Image
-            src="~/assets/images/interviewed.png"
+            :src="userPhoto"
             horizontalAlignment="center" 
             row="1" />
 
@@ -25,6 +25,7 @@
 <script>
 import InterviewService from '../services/InterviewService';
 import { TNSPlayer } from 'nativescript-audio';
+import { backendService } from '../main';
 
 const interviewService = new InterviewService();
 const player = new TNSPlayer();
@@ -34,6 +35,7 @@ export default {
 
     data() {
         return {
+            userPhoto: (backendService.photo !== "") ? backendService.photo : "~/assets/images/interviewed.png",
             playbackAudios: [],
             currentIndex: 0,
             isPlayingback: false,
@@ -129,13 +131,8 @@ export default {
 Image {
     width: 150;
     height: 150;
-    margin-top: 50;
-}
-
-.current {
-    border-width: 3;
-    border-color: #af3131;
     border-radius: 100;
+    margin-top: 50;
 }
 
 Button {
