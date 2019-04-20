@@ -42,12 +42,11 @@ export default {
 
     methods: {
         onLoadedPage() {
-            this.currentIndex = 0;
             this.$loadingIndicator.show("Chargement de l'entrevue en cours...");
             interviewService.loadUserInterview(this.interview)
             .then(result => {
                 this.makePlaybackAudios(result.questions, result.answers);
-                console.log(JSON.stringify(this.playbackAudios));
+                console.log("Playback audios size = " + this.playbackAudios.length);
                 this.$loadingIndicator.hide();
             })
             .catch(error => {
@@ -63,15 +62,15 @@ export default {
             this.playback(this.currentIndex);
         },
 
-        playback(currentIndex) {
+        playback() {
             player.playFromUrl({
-                audioFile: this.playbackAudios[currentIndex],
+                audioFile: this.playbackAudios[this.currentIndex],
                 loop: false,
                 completeCallback: () => {
                     console.log("Audio completed playing");
-                    if(currentIndex < this.playbackAudios.length - 1) {
-                        currentIndex++;
-                        this.playback(currentIndex);
+                    if(this.currentIndex < this.playbackAudios.length - 1) {
+                        this.currentIndex++;
+                        this.playback();
                     } else {
                         this.isPlayingback = false;
                         player.dispose();
@@ -103,15 +102,20 @@ export default {
             let size = questions.length;
             let isQuestion = true;
 
-            for(let i = 0; i < size; i++) {
-                if(isQuestion) {
-                    this.playbackAudios[i] = questions[i].downloadUrl;
-                }
-                else if(!isQuestion) {
-                    this.playbackAudios[i] = answers[i].downloadUrl;
-                }
-                isQuestion = !isQuestion;
-            }
+            questions.forEach((question, index) => {
+                this.playbackAudios.push(question.downloadUrl);
+                this.playbackAudios.push(answers[index].downloadUrl);
+            })
+
+            // for(let i = 0; i < size; i++) {
+            //     if(isQuestion) {
+            //         this.playbackAudios[i] = questions[i].downloadUrl;
+            //     }
+            //     else if(!isQuestion) {
+            //         this.playbackAudios[i] = answers[i].downloadUrl;
+            //     }
+            //     isQuestion = !isQuestion;
+            // }
         }
     }
 }

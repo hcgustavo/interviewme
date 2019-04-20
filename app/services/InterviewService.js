@@ -141,7 +141,7 @@ export default class InterviewService {
      */
     removeInterviewById(interviewId) {
         return firebase.firestore().collection('users').doc(backendService.token).update({
-            interviews2: firebase.firestore().FieldValue().arrayRemove(interviewId)
+            interviews: firebase.firestore().FieldValue().arrayRemove(interviewId)
         });
     }
 }
