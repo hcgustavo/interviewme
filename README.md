@@ -29,3 +29,6 @@ tns debug <platform> --bundle
 # Build, watch for changes and run the application
 tns run <platform> --bundle
 ```
+
+## Related projects
+<a href="https://github.com/hcgustavo/interviewme-functions" target="_blank">Interview.me Firebase Functions</a>
