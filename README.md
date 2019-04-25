@@ -1,6 +1,6 @@
 <h3 align="center">Interview.me</h3>
 
-<h4 align="center">A mobile app for simulating job interviews in french</h4>
+<h4 align="center">A mobile app for simulating job interviews in French</h4>
 
 <p align="center">
     <img src="./promo/screen_01.png" height="30%" width="30%" alt="App screenshot">
