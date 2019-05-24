@@ -1,19 +1,25 @@
 <template>
     <Page actionBarHidden="true" @loaded="onPageLoaded" androidStatusBarBackground="#fff">
-        <GridLayout rows="auto, auto, *">
+        <GridLayout rows="auto, auto, auto, *">
+            <Button 
+            class="quit-btn fa-solid" 
+            horizontalAlignment="right"
+            :text="timesIcon" 
+            @tap="onExit"
+             row="0" />
             <Image 
             src="~/assets/images/man-boss.png" 
             class="boss" 
             horizontalAlignment="center"
-            row="0" />
+            row="1" />
 
             <Label
             class="status"
             horizontalAlignment="center"
             v-model="status"
-            row="1" />
+            row="2" />
 
-            <DockLayout stretchLastChild="false" row="2">
+            <DockLayout stretchLastChild="false" row="3">
                 <Button 
                 dock="bottom" 
                 class="record-btn fa-solid"
@@ -65,6 +71,7 @@ export default {
             // Icons
             microphoneIcon: FontAwesome.getIcon(FontAwesome.Icon.MICROPHONE),
             stopIcon: FontAwesome.getIcon(FontAwesome.Icon.STOP),
+            timesIcon: FontAwesome.getIcon(FontAwesome.Icon.TIMES),
         }
     },
 
@@ -218,6 +225,21 @@ export default {
             const audioFolder = knownFolders.currentApp().getFolder('audio');
             const recordedFile = audioFolder.getFile(this.lastRecordedAudioName);
             return recordedFile;
+        },
+
+        onExit() {
+            dialogs.confirm({
+                title: "Quitter la session",
+                message: "Voulez-vous vraiment quitter la session? Vos réponses ne seront pas enrégistrées.",
+                okButtonText: "Oui",
+                cancelButtonText: "Non"
+            }).then(yes => {
+                if(yes) {
+                    player.dispose();
+                    recorder.dispose();
+                    this.$navigateTo(Main, {clearHistory: true});
+                }
+            })
         }
     }
 }
@@ -263,6 +285,16 @@ export default {
     background-color: #dc3545;
     color: #fff;
     font-size: 24;
+}
+
+.quit-btn {
+    width: 50;
+    height: 50;
+    margin-top: -10;
+    font-size: 20;
+    border-width: 1;
+    border-color: transparent;
+    color: $app-color;
 }
 </style>
 

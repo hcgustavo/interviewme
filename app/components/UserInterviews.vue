@@ -5,7 +5,7 @@
             <Label 
             verticalAlignment="center" 
             horizontalAlignment="center" 
-            text="Vous n'avez pas d'entrevue enregistré"
+            text="Vous n'avez pas d'entrevue enregistrée"
             row="1"
             v-if="isLoaded && interviews.length === 0" />
             <RadListView 
