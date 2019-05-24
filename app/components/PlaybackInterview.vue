@@ -1,22 +1,34 @@
 <template>
     <Page actionBarHidden="true" androidStatusBarBackground="#fff" @loaded="onLoadedPage">
-        <GridLayout rows="auto, auto, *" padding="0">
+        <GridLayout rows="auto, auto, auto, *" padding="0">
+            <Button 
+            class="quit-btn fa-solid" 
+            horizontalAlignment="right"
+            :text="timesIcon" 
+            @tap="onExit"
+             row="0" />
+
             <Image 
             src="~/assets/images/man-boss.png"
             horizontalAlignment="center" 
-            row="0" />
+            row="1" />
 
             <Image
             :src="userPhoto"
             horizontalAlignment="center" 
-            row="1" />
+            row="2" />
 
-            <DockLayout stretchLastChild="false" row="2">
+            <DockLayout stretchLastChild="false" row="3">
                 <Button 
                 dock="bottom" 
                 text="RÉÉCOUTER L'ENTREVUE"
-                :isEnabled="!isPlayingback"
+                v-show="!isPlayingback"
                 @tap="onPlayback" />
+                <Button 
+                dock="bottom" 
+                :text="playbackText"
+                v-show="isPlayingback"
+                @tap="onTogglePlayback" />
             </DockLayout>
         </GridLayout>
     </Page>
@@ -26,6 +38,9 @@
 import InterviewService from '../services/InterviewService';
 import { TNSPlayer } from 'nativescript-audio';
 import { backendService } from '../main';
+import * as FontAwesome from '../utils/font-awesome';
+
+const dialogs = require("tns-core-modules/ui/dialogs");
 
 const interviewService = new InterviewService();
 const player = new TNSPlayer();
@@ -39,6 +54,11 @@ export default {
             playbackAudios: [],
             currentIndex: 0,
             isPlayingback: false,
+            isPaused: false,
+            playbackText: "METTRE EN PAUSE",
+
+            // Icons
+            timesIcon: FontAwesome.getIcon(FontAwesome.Icon.TIMES),
         }
     },
 
@@ -64,6 +84,17 @@ export default {
             this.currentIndex = 0;
             this.isPlayingback = true;
             this.playback(this.currentIndex);
+        },
+
+        onTogglePlayback() {
+            if(this.isPaused) {
+                player.resume();
+                this.playbackText = "METTRE EN PAUSE";
+            } else {
+                player.pause();
+                this.playbackText = "CONTINUER";
+            }
+            this.isPaused = !this.isPaused;
         },
 
         playback() {
@@ -120,6 +151,20 @@ export default {
                 this.playbackAudios.push(question.downloadUrl);
                 this.playbackAudios.push(answers[index].downloadUrl);
             })
+        },
+
+        onExit() {
+            dialogs.confirm({
+                title: "Quitter la session",
+                message: "Voulez-vous vraiment quitter la session?",
+                okButtonText: "Oui",
+                cancelButtonText: "Non"
+            }).then(yes => {
+                if(yes) {
+                    player.dispose();
+                    this.$navigateBack();
+                }
+            })
         }
     }
 }
@@ -143,6 +188,17 @@ Button {
 Button:disabled {
     background-color: #5e5e5e;
     color: #fff;
+}
+
+.quit-btn {
+    width: 50;
+    height: 50;
+    margin-top: -10;
+    font-size: 20;
+    border-width: 1;
+    border-color: transparent;
+    background-color: transparent;
+    color: $app-color;
 }
 </style>
 
